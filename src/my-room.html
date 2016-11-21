@@ -1,0 +1,65 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="shared-styles.html">
+
+<dom-module id="my-room">
+    <template>
+        <style include="shared-styles">
+            :host {
+                display: block;
+
+                padding: 10px;
+            }
+        </style>
+
+        <app-route
+                route="{{route}}"
+                pattern="/:room"
+                data="{{routeData}}"></app-route>
+
+        <firebase-app auth-domain="shareit-6e445.firebaseapp.com"
+                      database-url="https://shareit-6e445.firebaseio.com/"
+                      api-key=" AIzaSyBXD3IE4WJVQMHbjq_x9nIEPpSYmD6n0C8">
+        </firebase-app>
+
+        <firebase-document
+                path="/rooms/{{room}}"
+                data="{{roomData}}">
+        </firebase-document>
+
+        <div class="card">
+            <h1>Sharing in - [[room]]</h1>
+            <paper-textarea label="share here whatever you want..." value="{{roomData.text}}"></paper-textarea>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+            is: 'my-room',
+
+            properties: {
+                route: String,
+                room: {
+                    type: String,
+                    computed: '_computeRoom(routeData.room)'
+                }
+            },
+
+            _computeRoom: function (newRoom) {
+                return newRoom;
+            }
+        });
+    </script>
+</dom-module>

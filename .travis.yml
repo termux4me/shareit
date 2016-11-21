@@ -1,0 +1,18 @@
+language: node_js
+sudo: required
+dist: trusty
+node_js:
+- '7'
+branches:
+  only:
+  - master
+before_script:
+- npm install -g bower polymer-cli firebase-tools
+- bower install
+script:
+- polymer build
+after_success:
+- firebase deploy --token=${FIREBASE_API_TOKEN}
+env:
+  global:
+    secure: Te+Mr7dGI8zC+YmiD/UmGF7JF2sWJwumuEbYgQSqAYEkuOyUVv8OUv1bsJkI/VLll8cVUZbZrR/ALeJkaDvqA4yAZ5QjBfLgtkTta6tJLymG7uvo1F9pBrzh3c/NAOVWu098HCtwJ08U6AC6qsw6iYAbhwQHgCYLed+wCVTkoop60AaEq8UGRxlUXNvCZFV0oh+M5OuuxejhOAPVExzBXw1brXWyMUNthhLSZrLh3baMKWgxRF/G0wSqDD/ynWyYP9m8pX96x5HunsGvd4L+96pnhVsrzcYrSN0mPZwUv0hXmx/mJrIAC/E/NH2qrrgnph0sO/TJlV4YiS7zY9tfz1nEhRIE+XvLUDXKP3cykBwR5bdmZtky6AcXEvPjJTDDKcHym98Lope6c2dTwlnWDr2oX1xar1CdWKXZapSNteDnbra3PJT80Lm5gHI2vz0Hx39gI+W0laZuH9yeW5B7kBd4Evwyvb/3RnSbzzoMVQWClTtezcKLOmMCwHHfqHcvWzprgHkMlcySZKFHU/qKX/8LACO0g1sUKY0GBOunSSrHZTnTmJjf8874S8jqTiddmt9AkXVn6ygnzjSQp4801pKuyPlhIGERox2FuO1KgHSIhBqjcteIycgISA09jLaHRhvs7QnxRfA1jU9GrNThxuixugHsKvO4lWTW78eRPJQ=

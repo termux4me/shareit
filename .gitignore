@@ -1,5 +1,9 @@
 .idea/
 
+.firebaserc
+database.rules.json
+firebase.json
+
 bower_components/
 build/
 node_modules/

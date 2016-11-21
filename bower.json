@@ -1,7 +1,7 @@
 {
-  "name": "polymer-starter-kit",
+  "name": "shareit",
   "authors": [
-    "The Polymer Authors"
+    "Ido Shamun"
   ],
   "private": true,
   "dependencies": {

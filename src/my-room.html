@@ -57,8 +57,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                 }
             },
 
+            attached: function () {
+                if (!this.room || !this.room.length) {
+                    window.location = '/room/' + this.generateRandomRoom();
+                }
+            },
+
             _computeRoom: function (newRoom) {
                 return newRoom;
+            },
+
+            generateRandomRoom: function () {
+                return Math.random().toString(36).substring(2, 8);
             }
         });
     </script>

@@ -20,6 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="my-room.html">
 
 <dom-module id="my-app">
     <template>
@@ -64,7 +65,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                         attr-for-selected="name"
                         fallback-selection="view404"
                         role="main">
-                    <my-room name="room" route="[[subroute]]"></my-room>
+                    <my-room id="room" name="room" route="[[subroute]]"></my-room>
                     <my-view404 name="view404"></my-view404>
                 </iron-pages>
             </app-header-layout>
@@ -89,7 +90,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             _routePageChanged: function (page) {
                 if (!page) {
-                    window.location = 'room/' + Math.random().toString(36).substring(4);
+                    window.location = '/room/' + this.$.room.generateRandomRoom();
                 }
                 else {
                     this.page = page;
@@ -97,9 +98,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             },
 
             _pageChanged: function (page) {
-                // Load page import on demand. Show 404 page if fails
-                var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
-                this.importHref(resolvedPageUrl, null, this._showPage404, true);
+                if (page !== 'room') {
+                    // Load page import on demand. Show 404 page if fails
+                    var resolvedPageUrl = this.resolveUrl('my-' + page + '.html');
+                    this.importHref(resolvedPageUrl, null, this._showPage404, true);
+                }
             },
 
             _showPage404: function () {

@@ -2,6 +2,8 @@
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-input/paper-textarea.html">
 <link rel="import" href="../bower_components/polymerfire/polymerfire.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="shared-styles.html">
 
 <dom-module id="my-room">
@@ -9,8 +11,29 @@
         <style include="shared-styles">
             :host {
                 display: block;
-
+                position: relative;
                 padding: 10px;
+                box-sizing: border-box;
+            }
+
+            paper-fab {
+                position: fixed;
+                right: 5%;
+                bottom: 5%;
+            }
+
+            paper-textarea {
+                max-height: 1500px;
+                overflow: hidden;
+            }
+
+            input[type="file"] {
+                width: 0.1px;
+                height: 0.1px;
+                opacity: 0;
+                overflow: hidden;
+                position: absolute;
+                z-index: -1;
             }
         </style>
 
@@ -31,10 +54,21 @@
 
         <div class="card">
             <h1>Sharing in - [[room]]</h1>
-            <paper-textarea label="share here whatever you want..." value="{{roomData.text}}"></paper-textarea>
+            <paper-textarea label="share here whatever you want..." value="{{roomData.text}}" no-label-float></paper-textarea>
         </div>
+
+        <template is="dom-if" if="[[!isFile]]">
+            <input type="file" name="upload" id="upload" on-change="_onFileChanage"/>
+            <label for="upload">
+                <paper-fab label="Upload file" icon="file-upload"></paper-fab>
+            </label>
+        </template>
+        <template is="dom-if" if="[[isFile]]">
+            <paper-fab label="Download file" icon="file-download" on-tap="_onDownload"></paper-fab>
+        </template>
     </template>
 
+    <script src="../bower_components/downloadjs/download.min.js"></script>
     <script>
         Polymer({
             is: 'my-room',
@@ -44,6 +78,11 @@
                 room: {
                     type: String,
                     computed: '_computeRoom(routeData.room)'
+                },
+                isFile: {
+                    type: Boolean,
+                    value: false,
+                    computed: '_computeIsFile(roomData.text)'
                 }
             },
 
@@ -55,6 +94,41 @@
 
             _computeRoom: function (newRoom) {
                 return newRoom;
+            },
+
+            _onFileChanage: function (event) {
+                var files = event.target.files;
+                if (files.length > 0) {
+                    var reader = new FileReader();
+
+                    reader.addEventListener('load', (function () {
+                        this.set('roomData.text', JSON.stringify({
+                            type: 'file',
+                            name: files[0].name,
+                            mimeType: files[0].type,
+                            data: reader.result
+                        }));
+                    }).bind(this), false);
+
+                    reader.readAsDataURL(files[0]);
+                }
+            },
+
+            _computeIsFile: function (data) {
+                try {
+                    var parsed = JSON.parse(data);
+                    if (parsed.type === 'file' && parsed.name && parsed.data && parsed.mimeType) {
+                        return true;
+                    }
+                }
+                catch (err) {
+                    return false;
+                }
+            },
+
+            _onDownload: function () {
+                var parsed = JSON.parse(this.roomData.text);
+                download(parsed.data, parsed.name, parsed.mimeType);
             },
 
             generateRandomRoom: function () {
